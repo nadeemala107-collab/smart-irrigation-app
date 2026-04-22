@@ -77,7 +77,7 @@ elif st.session_state.page == "input":
     city = st.text_input("🌍 Enter City", "Delhi")
 
     if st.button("🌦️ Get Weather"):
-        api_key = "PASTE_YOUR_REAL_API_KEY_HERE"   # 🔑 IMPORTANT
+        api_key = "809a01b88b722db7c4a26d3101d906fc"   # 🔑 IMPORTANT
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
         try:
