@@ -10,19 +10,19 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# FARM FRIENDLY UI STYLE
+# FARM STYLE UI
 # -------------------------------
 st.markdown("""
 <style>
 
-/* LIGHT FARM BACKGROUND BASE */
+/* BACKGROUND */
 .stApp {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-/* CLEAN PAGE */
+/* PAGE CONTAINER */
 .block-container {
     background: rgba(255,255,255,0.12) !important;
     backdrop-filter: blur(6px);
@@ -30,34 +30,34 @@ st.markdown("""
     border-radius: 15px;
 }
 
-/* FARM CARD */
+/* CARD STYLE */
 .card {
     background: rgba(255,255,255,0.20);
     padding: 20px;
     border-radius: 15px;
-    color: #1b1b1b;
     text-align: center;
+    color: #1b1b1b;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
 }
 
-/* HEADINGS FARM GREEN */
+/* HEADINGS */
 h1, h2, h3 {
     color: #1b5e20 !important;
 }
 
-/* TEXT CLEAN */
+/* TEXT */
 p, label {
     color: #2d3436 !important;
 }
 
-/* INPUT CLEAN FARM STYLE */
+/* INPUT */
 input {
-    background: #ffffff !important;
+    background: #fff !important;
     border-radius: 10px !important;
     color: black !important;
 }
 
-/* BUTTON GREEN FARM */
+/* BUTTON */
 .stButton>button {
     background: #4caf50;
     color: white;
@@ -132,8 +132,8 @@ if st.session_state.page == "home":
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.title("🌱 Smart Farming Irrigation System")
-    st.markdown("🚜 AI based smart water management for crops")
-    st.info("Helping farmers optimize water usage efficiently")
+    st.markdown("🚜 AI Powered Water Management for Crops")
+    st.info("Helping farmers optimize irrigation using smart data")
 
     if st.button("🚀 Start Monitoring"):
         st.session_state.page = "input"
@@ -175,7 +175,7 @@ elif st.session_state.page == "input":
                 st.session_state["temp"] = response['main']['temp']
                 st.session_state["humidity"] = response['main']['humidity']
 
-                st.success(f"🌡 Temperature: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
+                st.success(f"🌡 {st.session_state['temp']}°C | 💧 {st.session_state['humidity']}%")
 
         except:
             st.error("⚠ Network Error")
@@ -192,7 +192,7 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE 🚰 (FARM REPORT STYLE)
+# RESULT PAGE 🚰 (SMART FARM DASHBOARD)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -205,21 +205,34 @@ elif st.session_state.page == "result":
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    st.header("🚰 Irrigation Recommendation Report")
+    st.header("🌾 Smart Irrigation Decision Panel")
 
+    # STATUS PANEL
     if irrigation_on:
-        st.success("💧 Water Required - Irrigation ON")
-        st.markdown("🌱 Soil is dry, irrigation is recommended for healthy crop growth")
+        st.markdown("""
+        <div style="background:#2ecc71; padding:20px; border-radius:15px; color:white;">
+            <h2>🌧 Water Stress Detected</h2>
+            <p>💧 Recommendation: Irrigation Required</p>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.info("🚫 No Irrigation Required")
-        st.markdown("🌿 Soil moisture is sufficient for crops")
+        st.markdown("""
+        <div style="background:#74b9ff; padding:20px; border-radius:15px; color:white;">
+            <h2>🌿 Soil Condition Healthy</h2>
+            <p>🚫 Recommendation: No Irrigation Needed</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
 
+    # METRICS
     col1, col2, col3 = st.columns(3)
+
     col1.metric("🌱 Soil Moisture", f"{soil_moisture}%")
     col2.metric("🌡 Temperature", f"{temp}°C")
     col3.metric("💧 Humidity", f"{humidity}%")
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🔙 Back to Field"):
         st.session_state.page = "input"
@@ -230,4 +243,4 @@ elif st.session_state.page == "result":
 # FOOTER 🌿
 # -------------------------------
 st.divider()
-st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 😎")
+st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
