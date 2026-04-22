@@ -9,58 +9,80 @@ import requests
 # -------------------------------
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
-# 🎨 BACKGROUND FUNCTION (FIXED)
+# -------------------------------
+# GLOBAL STYLE FIX (IMPORTANT)
+# -------------------------------
+st.markdown("""
+<style>
+
+/* Background */
+.stApp {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Remove default white container issue */
+.block-container {
+    background: transparent !important;
+    padding: 25px;
+}
+
+/* GLASS CARD */
+.card {
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    padding: 25px;
+    border-radius: 18px;
+    color: white;
+    text-align: center;
+}
+
+/* FORCE TEXT VISIBILITY */
+h1, h2, h3, h4, p, label {
+    color: white !important;
+    text-shadow: 1px 1px 2px black;
+}
+
+/* INPUT STYLE */
+input {
+    background: rgba(255,255,255,0.95) !important;
+    color: black !important;
+    border-radius: 10px !important;
+}
+
+/* BUTTON STYLE */
+.stButton>button {
+    background: #2ecc71;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: bold;
+}
+
+.stButton>button:hover {
+    background: #27ae60;
+}
+
+/* CENTER LOADER FIX */
+div[data-testid="stSpinner"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# -------------------------------
+# BACKGROUND FUNCTION
+# -------------------------------
 def set_bg(image_url):
     st.markdown(f"""
     <style>
-
     .stApp {{
         background-image: url("{image_url}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
     }}
-
-    /* REMOVE DARK OVERLAY PROBLEM */
-    .block-container {{
-        background: transparent;
-        padding: 20px;
-    }}
-
-    /* GLASS CARD STYLE */
-    .card {{
-        background: rgba(0,0,0,0.45);
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        border-radius: 15px;
-        color: white;
-    }}
-
-    /* TEXT FIX */
-    h1, h2, h3, h4, p, label {{
-        color: white !important;
-    }}
-
-    /* INPUT BOX FIX */
-    input {{
-        background: rgba(255,255,255,0.9) !important;
-        color: black !important;
-        border-radius: 8px !important;
-    }}
-
-    /* BUTTON FIX */
-    .stButton>button {{
-        background-color: #2ecc71;
-        color: white;
-        border-radius: 10px;
-        padding: 8px 15px;
-        font-weight: bold;
-    }}
-
-    .stButton>button:hover {{
-        background-color: #27ae60;
-    }}
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -104,19 +126,20 @@ scaler = StandardScaler()
 scaler.fit(X)
 
 # -------------------------------
-# HOME PAGE
+# HOME PAGE (FARM + SKY)
 # -------------------------------
 if st.session_state.page == "home":
     set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.title("💧 Smart Precision Irrigation System")
-    st.markdown("### 🌱 Welcome to Smart Farming System")
-    st.info("AI + Weather based irrigation decision system")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("### 🌱 AI Powered Smart Farming Solution")
+    st.info("Real-time weather + soil based irrigation decision system")
 
-    if st.button("🚀 Start"):
+    if st.button("🚀 Start System"):
         st.session_state.page = "input"
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
 # DATASET PAGE
@@ -130,13 +153,13 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE
+# INPUT PAGE (FIELD + SKY LOOK)
 # -------------------------------
 elif st.session_state.page == "input":
-    set_bg("https://images.unsplash.com/photo-1464226184884-fa280b87c399")
+    set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("🌿 Enter Environmental Conditions")
+    st.header("🌿 Farm Conditions Input")
 
     city = st.text_input("🌍 Enter City", "Delhi")
 
@@ -148,15 +171,15 @@ elif st.session_state.page == "input":
             response = requests.get(url).json()
 
             if str(response.get("cod")) != "200":
-                st.error(f"❌ {response.get('message')}")
+                st.error("❌ Invalid City")
             else:
                 st.session_state["temp"] = response['main']['temp']
                 st.session_state["humidity"] = response['main']['humidity']
 
-                st.success(f"🌡 Temp: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
+                st.success(f"🌡 {st.session_state['temp']}°C | 💧 {st.session_state['humidity']}%")
 
         except:
-            st.error("⚠️ Network error")
+            st.error("⚠️ Network Error")
 
     col1, col2, col3 = st.columns(3)
     soil_moisture = col1.number_input("Soil Moisture (%)", 5.0, 60.0, 25.0)
@@ -170,27 +193,28 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE
+# RESULT PAGE (FULL FIXED VISIBILITY)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("🚰 Irrigation Decision")
+    st.header("🚰 Irrigation Decision Result")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
     irrigation_on = soil_moisture < 30
-    status_text = "💧 Irrigation ON" if irrigation_on else "🚫 Irrigation OFF"
 
-    st.markdown(f"""
-        <h2>{status_text}</h2>
-        <h4>🌱 Soil Moisture: {soil_moisture}</h4>
-        <h4>🌡 Temperature: {temp}</h4>
-        <h4>💧 Humidity: {humidity}</h4>
-    """, unsafe_allow_html=True)
+    if irrigation_on:
+        st.success("💧 Irrigation ON")
+    else:
+        st.error("🚫 Irrigation OFF")
+
+    st.metric("🌱 Soil Moisture", soil_moisture)
+    st.metric("🌡 Temperature", temp)
+    st.metric("💧 Humidity", humidity)
 
     if st.button("🔙 Back"):
         st.session_state.page = "input"
