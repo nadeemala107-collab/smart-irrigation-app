@@ -10,7 +10,7 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# FARM SOFT UI STYLE
+# FARM SOFT UI STYLE (FIXED INPUT ISSUE)
 # -------------------------------
 st.markdown("""
 <style>
@@ -22,7 +22,7 @@ st.markdown("""
     background-attachment: fixed;
 }
 
-/* CLEAN CONTAINER */
+/* MAIN CONTAINER */
 .block-container {
     background: rgba(255,255,255,0.10) !important;
     backdrop-filter: blur(6px);
@@ -50,10 +50,34 @@ p, label {
     color: #2d3436 !important;
 }
 
-/* INPUT */
-input {
-    background: #fff !important;
+/* ===== FIX INPUT VISIBILITY ===== */
+.stTextInput input,
+.stNumberInput input {
+    background-color: #ffffff !important;
+    color: #000000 !important;
     border-radius: 10px !important;
+    padding: 8px !important;
+    border: 1px solid #cfd8dc !important;
+}
+
+/* INPUT WRAPPER */
+.stTextInput, .stNumberInput {
+    background: rgba(255,255,255,0.75);
+    padding: 6px;
+    border-radius: 10px;
+}
+
+/* LABEL */
+label {
+    color: #1b5e20 !important;
+    font-weight: 600;
+}
+
+/* FOCUS EFFECT */
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    border: 2px solid #4caf50 !important;
+    outline: none !important;
 }
 
 /* BUTTON */
@@ -151,7 +175,7 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE 🌿 (FIELD LOOK)
+# INPUT PAGE 🌿 (FIXED VISIBILITY)
 # -------------------------------
 elif st.session_state.page == "input":
     set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
@@ -162,7 +186,7 @@ elif st.session_state.page == "input":
 
     city = st.text_input("🌍 Enter City", "Delhi")
 
-    if st.button("🌦 Get Weather"):
+    if st.button("🌦 Get Weather Data"):
         api_key = "YOUR_API_KEY_HERE"
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
@@ -181,6 +205,7 @@ elif st.session_state.page == "input":
             st.error("⚠ Network Error")
 
     col1, col2, col3 = st.columns(3)
+
     soil_moisture = col1.number_input("🌱 Soil Moisture (%)", 5.0, 60.0, 25.0)
     rainfall = col2.number_input("🌧 Rainfall (mm)", 0.0, 50.0, 0.0)
     ph = col3.number_input("⚗ Soil pH", 3.0, 9.0, 6.5)
@@ -192,7 +217,7 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE 🚰 (SMART FARM REPORT CARD)
+# RESULT PAGE 🚰 (CLEAN FARM REPORT)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -207,7 +232,6 @@ elif st.session_state.page == "result":
 
     st.header("🌾 Smart Farm Irrigation Report")
 
-    # 🌟 UNIQUE RESULT UI (NEW STYLE)
     if irrigation_on:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #43cea2, #185a9d);
@@ -216,7 +240,7 @@ elif st.session_state.page == "result":
                     color:white;
                     text-align:center;">
             <h2>💧 WATER ALERT ACTIVE</h2>
-            <p>🌱 Soil needs irrigation for optimal growth</p>
+            <p>🌱 Soil moisture low → Irrigation required</p>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -226,14 +250,13 @@ elif st.session_state.page == "result":
                     border-radius:15px;
                     color:white;
                     text-align:center;">
-            <h2>🌿 FIELD IN GOOD CONDITION</h2>
-            <p>🚫 No irrigation required at this time</p>
+            <h2>🌿 FIELD HEALTHY</h2>
+            <p>🚫 No irrigation required</p>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # METRICS
     col1, col2, col3 = st.columns(3)
 
     col1.metric("🌱 Soil Moisture", f"{soil_moisture}%")
