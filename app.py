@@ -9,6 +9,23 @@ import requests
 # -------------------------------
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
+# 🎨 BACKGROUND STYLE
+st.markdown("""
+<style>
+.stApp {
+    background-image: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+.block-container {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 15px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # -------------------------------
 # LOAD DATA
 # -------------------------------
@@ -25,7 +42,7 @@ if "page" not in st.session_state:
     st.session_state.page = "home"
 
 # -------------------------------
-# TOP NAV BUTTONS
+# NAV BUTTONS
 # -------------------------------
 col1, col2, col3 = st.columns([1,1,6])
 
@@ -65,7 +82,7 @@ if st.session_state.page == "home":
 # -------------------------------
 elif st.session_state.page == "dataset":
     st.header("📊 Dataset Overview")
-    st.write(data.head())
+    st.dataframe(data.head())
 
 # -------------------------------
 # INPUT PAGE
@@ -77,15 +94,15 @@ elif st.session_state.page == "input":
     city = st.text_input("🌍 Enter City", "Delhi")
 
     if st.button("🌦️ Get Weather"):
-        api_key = "809a01b88b722db7c4a26d3101d906fc"   # 🔑 IMPORTANT
-       url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        api_key = "809a01b88b722db7c4a26d3101d906fc"
+
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
         try:
             response = requests.get(url).json()
 
-            # Proper error handling
             if str(response.get("cod")) != "200":
-                st.error(f"❌ Error: {response.get('message')}")
+                st.error(f"❌ {response.get('message')}")
             else:
                 temp = response['main']['temp']
                 humidity = response['main']['humidity']
@@ -96,7 +113,7 @@ elif st.session_state.page == "input":
                 st.success(f"🌡 Temp: {temp}°C | 💧 Humidity: {humidity}%")
 
         except:
-            st.error("⚠️ Network error. Try again.")
+            st.error("⚠️ Network error")
 
     # Manual Inputs
     col1, col2, col3 = st.columns(3)
@@ -118,23 +135,35 @@ elif st.session_state.page == "result":
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
-    # 🎨 Color Card UI
+    # 🎨 GLASS CARD UI
     if soil_moisture < 30:
         st.markdown(f"""
-        <div style='background-color:#d4edda;padding:20px;border-radius:12px'>
-            <h2 style='color:green;'>💧 Irrigation ON</h2>
-            <p>🌱 Soil Moisture: {soil_moisture}</p>
-            <p>🌡 Temperature: {temp}</p>
-            <p>💧 Humidity: {humidity}</p>
+        <div style='
+        backdrop-filter: blur(10px);
+        background: rgba(0,255,0,0.2);
+        padding:20px;
+        border-radius:15px;
+        color:white;
+        '>
+        <h2>💧 Irrigation ON</h2>
+        <p>🌱 Soil Moisture: {soil_moisture}</p>
+        <p>🌡 Temperature: {temp}</p>
+        <p>💧 Humidity: {humidity}</p>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown(f"""
-        <div style='background-color:#f8d7da;padding:20px;border-radius:12px'>
-            <h2 style='color:red;'>🚫 Irrigation OFF</h2>
-            <p>🌱 Soil Moisture: {soil_moisture}</p>
-            <p>🌡 Temperature: {temp}</p>
-            <p>💧 Humidity: {humidity}</p>
+        <div style='
+        backdrop-filter: blur(10px);
+        background: rgba(255,0,0,0.2);
+        padding:20px;
+        border-radius:15px;
+        color:white;
+        '>
+        <h2>🚫 Irrigation OFF</h2>
+        <p>🌱 Soil Moisture: {soil_moisture}</p>
+        <p>🌡 Temperature: {temp}</p>
+        <p>💧 Humidity: {humidity}</p>
         </div>
         """, unsafe_allow_html=True)
 
