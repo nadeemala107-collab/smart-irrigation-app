@@ -9,22 +9,23 @@ import requests
 # -------------------------------
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
-# 🎨 BACKGROUND STYLE
-st.markdown("""
-<style>
-.stApp {
-    background-image: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-.block-container {
-    background: rgba(0,0,0,0.6);
-    padding: 20px;
-    border-radius: 15px;
-}
-</style>
-""", unsafe_allow_html=True)
+# 🎨 PAGE BACKGROUND FUNCTION
+def set_bg(image_url):
+    st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("{image_url}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    .block-container {{
+        background: rgba(0,0,0,0.55);
+        padding: 20px;
+        border-radius: 15px;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
 # -------------------------------
 # LOAD DATA
@@ -42,7 +43,7 @@ if "page" not in st.session_state:
     st.session_state.page = "home"
 
 # -------------------------------
-# NAV BUTTONS
+# NAVIGATION
 # -------------------------------
 col1, col2, col3 = st.columns([1,1,6])
 
@@ -69,8 +70,9 @@ scaler.fit(X)
 # HOME PAGE
 # -------------------------------
 if st.session_state.page == "home":
-    st.title("💧 Smart Precision Irrigation System")
+    set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
 
+    st.title("💧 Smart Precision Irrigation System")
     st.markdown("### 🌱 Welcome to Smart Farming System")
     st.info("AI + Weather based irrigation decision system")
 
@@ -81,20 +83,23 @@ if st.session_state.page == "home":
 # DATASET PAGE
 # -------------------------------
 elif st.session_state.page == "dataset":
+    set_bg("https://images.unsplash.com/photo-1551288049-bebda4e38f71")
+
     st.header("📊 Dataset Overview")
     st.dataframe(data.head())
 
 # -------------------------------
-# INPUT PAGE
+# INPUT PAGE (FIELD LOOK)
 # -------------------------------
 elif st.session_state.page == "input":
+    set_bg("https://images.unsplash.com/photo-1464226184884-fa280b87c399")
+
     st.header("🌿 Enter Environmental Conditions")
 
     city = st.text_input("🌍 Enter City", "Delhi")
 
     if st.button("🌦️ Get Weather"):
         api_key = "YOUR_API_KEY_HERE"
-
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
         try:
@@ -121,19 +126,20 @@ elif st.session_state.page == "input":
         st.session_state.page = "result"
 
 # -------------------------------
-# RESULT PAGE (FIXED & CLEAN)
+# RESULT PAGE (IRRIGATION LOOK)
 # -------------------------------
 elif st.session_state.page == "result":
+    set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
+
     st.header("🚰 Irrigation Decision")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
-    # Decision logic (single clean version)
     irrigation_on = soil_moisture < 30
     status_text = "💧 Irrigation ON" if irrigation_on else "🚫 Irrigation OFF"
-    bg_color = "rgba(0,255,0,0.2)" if irrigation_on else "rgba(255,0,0,0.2)"
+    bg_color = "rgba(0,255,0,0.25)" if irrigation_on else "rgba(255,0,0,0.25)"
 
     st.markdown(f"""
     <div style='
@@ -142,11 +148,12 @@ elif st.session_state.page == "result":
         padding:20px;
         border-radius:15px;
         color:white;
+        text-align:center;
     '>
         <h2>{status_text}</h2>
-        <p>🌱 Soil Moisture: {soil_moisture}</p>
-        <p>🌡 Temperature: {temp}</p>
-        <p>💧 Humidity: {humidity}</p>
+        <h4>🌱 Soil Moisture: {soil_moisture}</h4>
+        <h4>🌡 Temperature: {temp}</h4>
+        <h4>💧 Humidity: {humidity}</h4>
     </div>
     """, unsafe_allow_html=True)
 
