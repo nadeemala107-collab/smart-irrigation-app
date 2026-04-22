@@ -3,8 +3,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -48,22 +46,10 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 # 4️⃣ MODEL TRAINING (LSTM)
 # -------------------------------
 @st.cache_resource
-def train_model():
-    model = Sequential([
-        LSTM(128, input_shape=(X_train.shape[1], X_train.shape[2]), return_sequences=True),
-        Dropout(0.3),
-        LSTM(64, return_sequences=False),
-        Dropout(0.3),
-        Dense(32, activation='relu'),
-        Dense(1, activation='linear')
-    ])
-    model.compile(optimizer='adam', loss='mse', metrics=['mae'])
-    model.fit(X_train, y_train, epochs=100, batch_size=32, verbose=0, validation_split=0.2)
-    return model
-
-with st.spinner("Training model... ⏳"):
-    model = train_model()
-st.success("✅ Model trained successfully!")
+if moisture < 30:
+    st.success("💧 Irrigation ON")
+else:
+    st.warning("🚫 Irrigation OFF")
 
 # -------------------------------
 # 5️⃣ USER INPUT SECTION
