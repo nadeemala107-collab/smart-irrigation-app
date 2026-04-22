@@ -90,11 +90,10 @@ elif st.session_state.page == "dataset":
 elif st.session_state.page == "input":
     st.header("🌿 Enter Environmental Conditions")
 
-    # 🌍 City Input
     city = st.text_input("🌍 Enter City", "Delhi")
 
     if st.button("🌦️ Get Weather"):
-        api_key = "809a01b88b722db7c4a26d3101d906fc"
+        api_key = "YOUR_API_KEY_HERE"
 
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
@@ -104,18 +103,14 @@ elif st.session_state.page == "input":
             if str(response.get("cod")) != "200":
                 st.error(f"❌ {response.get('message')}")
             else:
-                temp = response['main']['temp']
-                humidity = response['main']['humidity']
+                st.session_state["temp"] = response['main']['temp']
+                st.session_state["humidity"] = response['main']['humidity']
 
-                st.session_state["temp"] = temp
-                st.session_state["humidity"] = humidity
-
-                st.success(f"🌡 Temp: {temp}°C | 💧 Humidity: {humidity}%")
+                st.success(f"🌡 Temp: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
 
         except:
             st.error("⚠️ Network error")
 
-    # Manual Inputs
     col1, col2, col3 = st.columns(3)
     soil_moisture = col1.number_input("Soil Moisture (%)", 5.0, 60.0, 25.0)
     rainfall = col2.number_input("Rainfall (mm)", 0.0, 50.0, 0.0)
@@ -126,7 +121,7 @@ elif st.session_state.page == "input":
         st.session_state.page = "result"
 
 # -------------------------------
-# RESULT PAGE
+# RESULT PAGE (FIXED & CLEAN)
 # -------------------------------
 elif st.session_state.page == "result":
     st.header("🚰 Irrigation Decision")
@@ -135,37 +130,25 @@ elif st.session_state.page == "result":
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
-    # 🎨 GLASS CARD UI
-    if soil_moisture < 30:
-        st.markdown(f"""
-        <div style='
+    # Decision logic (single clean version)
+    irrigation_on = soil_moisture < 30
+    status_text = "💧 Irrigation ON" if irrigation_on else "🚫 Irrigation OFF"
+    bg_color = "rgba(0,255,0,0.2)" if irrigation_on else "rgba(255,0,0,0.2)"
+
+    st.markdown(f"""
+    <div style='
         backdrop-filter: blur(10px);
-        background: rgba(0,255,0,0.2);
+        background: {bg_color};
         padding:20px;
         border-radius:15px;
         color:white;
-        '>
-        <h2>💧 Irrigation ON</h2>
+    '>
+        <h2>{status_text}</h2>
         <p>🌱 Soil Moisture: {soil_moisture}</p>
         <p>🌡 Temperature: {temp}</p>
         <p>💧 Humidity: {humidity}</p>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style='
-        backdrop-filter: blur(10px);
-        background: rgba(255,0,0,0.2);
-        padding:20px;
-        border-radius:15px;
-        color:white;
-        '>
-        <h2>🚫 Irrigation OFF</h2>
-        <p>🌱 Soil Moisture: {soil_moisture}</p>
-        <p>🌡 Temperature: {temp}</p>
-        <p>💧 Humidity: {humidity}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
     if st.button("🔙 Back"):
         st.session_state.page = "input"
