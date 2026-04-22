@@ -10,61 +10,63 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# GLOBAL STYLE FIX (IMPORTANT)
+# SOFT UI STYLE (FIXED + BLAND LOOK)
 # -------------------------------
 st.markdown("""
 <style>
 
-/* Background */
+/* BACKGROUND */
 .stApp {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-/* Remove default white container issue */
+/* CLEAN CONTAINER */
 .block-container {
-    background: transparent !important;
-    padding: 25px;
+    background: rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(6px);
+    padding: 20px;
 }
 
-/* GLASS CARD */
+/* SOFT CARD */
 .card {
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(12px);
-    padding: 25px;
-    border-radius: 18px;
-    color: white;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    color: #f5f5f5;
     text-align: center;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
 }
 
-/* FORCE TEXT VISIBILITY */
+/* TEXT SOFT (NOT HARSH WHITE) */
 h1, h2, h3, h4, p, label {
-    color: white !important;
-    text-shadow: 1px 1px 2px black;
+    color: #f1f1f1 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-/* INPUT STYLE */
+/* INPUT CLEAN */
 input {
     background: rgba(255,255,255,0.95) !important;
     color: black !important;
     border-radius: 10px !important;
 }
 
-/* BUTTON STYLE */
+/* BUTTON SOFT GREEN */
 .stButton>button {
-    background: #2ecc71;
+    background: #4CAF50;
     color: white;
     border-radius: 10px;
-    padding: 10px 18px;
-    font-weight: bold;
+    padding: 10px 16px;
+    font-weight: 500;
 }
 
 .stButton>button:hover {
-    background: #27ae60;
+    background: #43a047;
 }
 
-/* CENTER LOADER FIX */
+/* CENTER LOADER */
 div[data-testid="stSpinner"] {
     display: flex;
     justify-content: center;
@@ -126,15 +128,15 @@ scaler = StandardScaler()
 scaler.fit(X)
 
 # -------------------------------
-# HOME PAGE (FARM + SKY)
+# HOME PAGE (SOFT FARM LOOK)
 # -------------------------------
 if st.session_state.page == "home":
-    set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
+    set_bg("https://images.unsplash.com/photo-1461354464878-ad92f492a5a0")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.title("💧 Smart Precision Irrigation System")
-    st.markdown("### 🌱 AI Powered Smart Farming Solution")
-    st.info("Real-time weather + soil based irrigation decision system")
+    st.markdown("### 🌱 Smart Farming Made Simple")
+    st.info("AI + Weather based irrigation system")
 
     if st.button("🚀 Start System"):
         st.session_state.page = "input"
@@ -153,10 +155,10 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE (FIELD + SKY LOOK)
+# INPUT PAGE (FIELD + SKY SOFT)
 # -------------------------------
 elif st.session_state.page == "input":
-    set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
+    set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.header("🌿 Farm Conditions Input")
@@ -193,7 +195,7 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE (FULL FIXED VISIBILITY)
+# RESULT PAGE (CLEAN + VISIBLE)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -205,12 +207,10 @@ elif st.session_state.page == "result":
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
-    irrigation_on = soil_moisture < 30
-
-    if irrigation_on:
+    if soil_moisture < 30:
         st.success("💧 Irrigation ON")
     else:
-        st.error("🚫 Irrigation OFF")
+        st.info("🚫 Irrigation OFF")
 
     st.metric("🌱 Soil Moisture", soil_moisture)
     st.metric("🌡 Temperature", temp)
