@@ -274,8 +274,8 @@ elif st.session_state.page == "result":
 st.divider()
 
 st.markdown("""
-<div style='text-align:center; color:#1b5e20; font-weight:600; font-size:15px;'>
-🐐 Ekamdeep Singh | 🐐 Dheeraj Sharma | 🐐 Nadeem Alam  
-🚜 Smart Irrigation AI System
+<div style='text-align:center; color:#2e7d32; font-weight:600; font-size:16px;'>
+🌿 Built By: 🐐 Ekamdeep Singh | 🐐 Dheeraj Sharma | 🐐 Nadeem Alam  
+🚜 Smart Irrigation AI System 🌾
 </div>
 """, unsafe_allow_html=True)
