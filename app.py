@@ -10,67 +10,64 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# SOFT UI STYLE (FIXED + BLAND LOOK)
+# FARM FRIENDLY UI STYLE
 # -------------------------------
 st.markdown("""
 <style>
 
-/* BACKGROUND */
+/* LIGHT FARM BACKGROUND BASE */
 .stApp {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-/* CLEAN CONTAINER */
+/* CLEAN PAGE */
 .block-container {
-    background: rgba(255,255,255,0.08) !important;
+    background: rgba(255,255,255,0.12) !important;
     backdrop-filter: blur(6px);
     padding: 20px;
+    border-radius: 15px;
 }
 
-/* SOFT CARD */
+/* FARM CARD */
 .card {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.20);
     padding: 20px;
     border-radius: 15px;
-    color: #f5f5f5;
+    color: #1b1b1b;
     text-align: center;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
 }
 
-/* TEXT SOFT (NOT HARSH WHITE) */
-h1, h2, h3, h4, p, label {
-    color: #f1f1f1 !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+/* HEADINGS FARM GREEN */
+h1, h2, h3 {
+    color: #1b5e20 !important;
 }
 
-/* INPUT CLEAN */
+/* TEXT CLEAN */
+p, label {
+    color: #2d3436 !important;
+}
+
+/* INPUT CLEAN FARM STYLE */
 input {
-    background: rgba(255,255,255,0.95) !important;
-    color: black !important;
+    background: #ffffff !important;
     border-radius: 10px !important;
+    color: black !important;
 }
 
-/* BUTTON SOFT GREEN */
+/* BUTTON GREEN FARM */
 .stButton>button {
-    background: #4CAF50;
+    background: #4caf50;
     color: white;
     border-radius: 10px;
-    padding: 10px 16px;
-    font-weight: 500;
+    padding: 10px 15px;
+    font-weight: 600;
 }
 
 .stButton>button:hover {
-    background: #43a047;
-}
-
-/* CENTER LOADER */
-div[data-testid="stSpinner"] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: #388e3c;
 }
 
 </style>
@@ -128,44 +125,44 @@ scaler = StandardScaler()
 scaler.fit(X)
 
 # -------------------------------
-# HOME PAGE (SOFT FARM LOOK)
+# HOME PAGE 🌾
 # -------------------------------
 if st.session_state.page == "home":
     set_bg("https://images.unsplash.com/photo-1461354464878-ad92f492a5a0")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.title("💧 Smart Precision Irrigation System")
-    st.markdown("### 🌱 Smart Farming Made Simple")
-    st.info("AI + Weather based irrigation system")
+    st.title("🌱 Smart Farming Irrigation System")
+    st.markdown("🚜 AI based smart water management for crops")
+    st.info("Helping farmers optimize water usage efficiently")
 
-    if st.button("🚀 Start System"):
+    if st.button("🚀 Start Monitoring"):
         st.session_state.page = "input"
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# DATASET PAGE
+# DATASET PAGE 📊
 # -------------------------------
 elif st.session_state.page == "dataset":
     set_bg("https://images.unsplash.com/photo-1551288049-bebda4e38f71")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("📊 Dataset Overview")
+    st.header("📊 Crop Dataset Overview")
     st.dataframe(data.head())
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE (FIELD + SKY SOFT)
+# INPUT PAGE 🌿
 # -------------------------------
 elif st.session_state.page == "input":
     set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("🌿 Farm Conditions Input")
+    st.header("🌿 Field Condition Input")
 
     city = st.text_input("🌍 Enter City", "Delhi")
 
-    if st.button("🌦️ Get Weather"):
+    if st.button("🌦 Get Weather Data"):
         api_key = "YOUR_API_KEY_HERE"
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
@@ -173,56 +170,64 @@ elif st.session_state.page == "input":
             response = requests.get(url).json()
 
             if str(response.get("cod")) != "200":
-                st.error("❌ Invalid City")
+                st.error("❌ City not found")
             else:
                 st.session_state["temp"] = response['main']['temp']
                 st.session_state["humidity"] = response['main']['humidity']
 
-                st.success(f"🌡 {st.session_state['temp']}°C | 💧 {st.session_state['humidity']}%")
+                st.success(f"🌡 Temperature: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
 
         except:
-            st.error("⚠️ Network Error")
+            st.error("⚠ Network Error")
 
     col1, col2, col3 = st.columns(3)
-    soil_moisture = col1.number_input("Soil Moisture (%)", 5.0, 60.0, 25.0)
-    rainfall = col2.number_input("Rainfall (mm)", 0.0, 50.0, 0.0)
-    ph = col3.number_input("Soil pH", 3.0, 9.0, 6.5)
+    soil_moisture = col1.number_input("🌱 Soil Moisture (%)", 5.0, 60.0, 25.0)
+    rainfall = col2.number_input("🌧 Rainfall (mm)", 0.0, 50.0, 0.0)
+    ph = col3.number_input("⚗ Soil pH", 3.0, 9.0, 6.5)
 
-    if st.button("➡️ Get Result"):
+    if st.button("➡ Get Irrigation Result"):
         st.session_state.soil_moisture = soil_moisture
         st.session_state.page = "result"
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE (CLEAN + VISIBLE)
+# RESULT PAGE 🚰 (FARM REPORT STYLE)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("🚰 Irrigation Decision Result")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
     temp = st.session_state.get("temp", "N/A")
     humidity = st.session_state.get("humidity", "N/A")
 
-    if soil_moisture < 30:
-        st.success("💧 Irrigation ON")
+    irrigation_on = soil_moisture < 30
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    st.header("🚰 Irrigation Recommendation Report")
+
+    if irrigation_on:
+        st.success("💧 Water Required - Irrigation ON")
+        st.markdown("🌱 Soil is dry, irrigation is recommended for healthy crop growth")
     else:
-        st.info("🚫 Irrigation OFF")
+        st.info("🚫 No Irrigation Required")
+        st.markdown("🌿 Soil moisture is sufficient for crops")
 
-    st.metric("🌱 Soil Moisture", soil_moisture)
-    st.metric("🌡 Temperature", temp)
-    st.metric("💧 Humidity", humidity)
+    st.markdown("---")
 
-    if st.button("🔙 Back"):
+    col1, col2, col3 = st.columns(3)
+    col1.metric("🌱 Soil Moisture", f"{soil_moisture}%")
+    col2.metric("🌡 Temperature", f"{temp}°C")
+    col3.metric("💧 Humidity", f"{humidity}%")
+
+    if st.button("🔙 Back to Field"):
         st.session_state.page = "input"
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# FOOTER
+# FOOTER 🌿
 # -------------------------------
 st.divider()
-st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
+st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 😎")
