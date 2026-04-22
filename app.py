@@ -77,18 +77,26 @@ elif st.session_state.page == "input":
     city = st.text_input("🌍 Enter City", "Delhi")
 
     if st.button("🌦️ Get Weather"):
-        api_key = "YOUR_API_KEY"   # ← apni API key daalo
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        api_key = "PASTE_YOUR_REAL_API_KEY_HERE"   # 🔑 IMPORTANT
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
-        response = requests.get(url).json()
+        try:
+            response = requests.get(url).json()
 
-        if response.get("cod") != 200:
-            st.error("City not found ❌")
-        else:
-            st.session_state["temp"] = response['main']['temp']
-            st.session_state["humidity"] = response['main']['humidity']
+            # Proper error handling
+            if str(response.get("cod")) != "200":
+                st.error(f"❌ Error: {response.get('message')}")
+            else:
+                temp = response['main']['temp']
+                humidity = response['main']['humidity']
 
-            st.success(f"🌡 Temp: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
+                st.session_state["temp"] = temp
+                st.session_state["humidity"] = humidity
+
+                st.success(f"🌡 Temp: {temp}°C | 💧 Humidity: {humidity}%")
+
+        except:
+            st.error("⚠️ Network error. Try again.")
 
     # Manual Inputs
     col1, col2, col3 = st.columns(3)
