@@ -9,21 +9,58 @@ import requests
 # -------------------------------
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
-# 🎨 PAGE BACKGROUND FUNCTION
+# 🎨 BACKGROUND FUNCTION (FIXED)
 def set_bg(image_url):
     st.markdown(f"""
     <style>
+
     .stApp {{
         background-image: url("{image_url}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }}
+
+    /* REMOVE DARK OVERLAY PROBLEM */
     .block-container {{
-        background: rgba(0,0,0,0.55);
+        background: transparent;
+        padding: 20px;
+    }}
+
+    /* GLASS CARD STYLE */
+    .card {{
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(10px);
         padding: 20px;
         border-radius: 15px;
+        color: white;
     }}
+
+    /* TEXT FIX */
+    h1, h2, h3, h4, p, label {{
+        color: white !important;
+    }}
+
+    /* INPUT BOX FIX */
+    input {{
+        background: rgba(255,255,255,0.9) !important;
+        color: black !important;
+        border-radius: 8px !important;
+    }}
+
+    /* BUTTON FIX */
+    .stButton>button {{
+        background-color: #2ecc71;
+        color: white;
+        border-radius: 10px;
+        padding: 8px 15px;
+        font-weight: bold;
+    }}
+
+    .stButton>button:hover {{
+        background-color: #27ae60;
+    }}
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -72,9 +109,11 @@ scaler.fit(X)
 if st.session_state.page == "home":
     set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.title("💧 Smart Precision Irrigation System")
     st.markdown("### 🌱 Welcome to Smart Farming System")
     st.info("AI + Weather based irrigation decision system")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button("🚀 Start"):
         st.session_state.page = "input"
@@ -85,15 +124,18 @@ if st.session_state.page == "home":
 elif st.session_state.page == "dataset":
     set_bg("https://images.unsplash.com/photo-1551288049-bebda4e38f71")
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.header("📊 Dataset Overview")
     st.dataframe(data.head())
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE (FIELD LOOK)
+# INPUT PAGE
 # -------------------------------
 elif st.session_state.page == "input":
     set_bg("https://images.unsplash.com/photo-1464226184884-fa280b87c399")
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.header("🌿 Enter Environmental Conditions")
 
     city = st.text_input("🌍 Enter City", "Delhi")
@@ -125,12 +167,15 @@ elif st.session_state.page == "input":
         st.session_state.soil_moisture = soil_moisture
         st.session_state.page = "result"
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
 # -------------------------------
-# RESULT PAGE (IRRIGATION LOOK)
+# RESULT PAGE
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.header("🚰 Irrigation Decision")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
@@ -139,26 +184,18 @@ elif st.session_state.page == "result":
 
     irrigation_on = soil_moisture < 30
     status_text = "💧 Irrigation ON" if irrigation_on else "🚫 Irrigation OFF"
-    bg_color = "rgba(0,255,0,0.25)" if irrigation_on else "rgba(255,0,0,0.25)"
 
     st.markdown(f"""
-    <div style='
-        backdrop-filter: blur(10px);
-        background: {bg_color};
-        padding:20px;
-        border-radius:15px;
-        color:white;
-        text-align:center;
-    '>
         <h2>{status_text}</h2>
         <h4>🌱 Soil Moisture: {soil_moisture}</h4>
         <h4>🌡 Temperature: {temp}</h4>
         <h4>💧 Humidity: {humidity}</h4>
-    </div>
     """, unsafe_allow_html=True)
 
     if st.button("🔙 Back"):
         st.session_state.page = "input"
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
 # FOOTER
