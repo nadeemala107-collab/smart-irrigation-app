@@ -11,7 +11,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 # 1️⃣ PAGE CONFIG
 # -------------------------------
 st.set_page_config(page_title="IoT-Based Smart Irrigation", layout="wide")
-st.title("💧 IoT-Based Precision Irrigation System using LSTM")
+st.title("💧Precision Irrigation System using LSTM")
 
 # -------------------------------
 # 2️⃣ LOAD DATASET
@@ -41,15 +41,6 @@ X_scaled = np.reshape(X_scaled, (X_scaled.shape[0], 1, X_scaled.shape[1]))
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-
-# -------------------------------
-# 4️⃣ MODEL TRAINING (LSTM)
-# -------------------------------
-@st.cache_resource
-if moisture < 30:
-    st.success("💧 Irrigation ON")
-else:
-    st.warning("🚫 Irrigation OFF")
 
 # -------------------------------
 # 5️⃣ USER INPUT SECTION
@@ -82,42 +73,22 @@ X_in = np.reshape(X_in, (X_in.shape[0], 1, X_in.shape[1]))
 # -------------------------------
 # 6️⃣ PREDICTION
 # -------------------------------
-prediction = model.predict(X_in)[0][0]
-threshold = y.mean()
-status = "💧 Irrigation ON" if prediction > threshold else "🌤️ Irrigation OFF"
+# Simple irrigation logic (no AI model)
+
+if soil_moisture < 30:
+    status = "💧 Irrigation ON"
+else:
+    status = "🚫 Irrigation OFF"
+
+prediction = soil_moisture
 
 st.subheader("🔮 Predicted Water Requirement")
 st.metric(label="Predicted water usage efficiency", value=f"{prediction:.2f}")
+
 st.subheader("🚰 Irrigation Status")
-st.success(status if "ON" in status else status)
+st.success(status)
 
-# -------------------------------
-# 7️⃣ MODEL PERFORMANCE
-# -------------------------------
-y_pred = model.predict(X_test).flatten()
+st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
 
-mae = mean_absolute_error(y_test, y_pred)
-mse = mean_squared_error(y_test, y_pred)
-rmse = np.sqrt(mse)
-r2 = r2_score(y_test, y_pred)
 
-st.header("📈 Model Performance Metrics")
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Mean Absolute Error (MAE)", f"{mae:.3f}")
-col2.metric("Mean Squared Error (MSE)", f"{mse:.3f}")
-col3.metric("Root Mean Squared Error (RMSE)", f"{rmse:.3f}")
-col4.metric("R² Score", f"{r2:.3f}")
 
-# -------------------------------
-# 8️⃣ VISUALIZATION
-# -------------------------------
-st.header("📊 True vs Predicted Water Usage Efficiency")
-fig, ax = plt.subplots(figsize=(8, 4))
-ax.plot(y_test[:100].values, label='True Values', color='blue')
-ax.plot(y_pred[:100], label='Predicted', color='red')
-ax.legend()
-ax.set_xlabel("Samples")
-ax.set_ylabel("Efficiency")
-st.pyplot(fig)
-
-st.caption("Developed by Udit Jain & Team 🌿 | IoT-based Smart Farming")
