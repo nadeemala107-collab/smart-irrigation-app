@@ -78,7 +78,7 @@ elif st.session_state.page == "input":
 
     if st.button("🌦️ Get Weather"):
         api_key = "809a01b88b722db7c4a26d3101d906fc"   # 🔑 IMPORTANT
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+       url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
         try:
             response = requests.get(url).json()
