@@ -50,16 +50,12 @@ p {
     color: #2d3436 !important;
 }
 
-/* ============================= */
-/* ✅ FIX INPUT VISIBILITY FULL */
-/* ============================= */
-
+/* INPUT FIX */
 label {
     color: #1b5e20 !important;
     font-weight: 600 !important;
 }
 
-/* input boxes */
 .stTextInput input,
 .stNumberInput input {
     background-color: #ffffff !important;
@@ -69,18 +65,10 @@ label {
     padding: 8px !important;
 }
 
-/* input container */
 .stTextInput, .stNumberInput {
     background: rgba(255,255,255,0.70) !important;
     padding: 6px;
     border-radius: 10px;
-}
-
-/* focus effect */
-.stTextInput input:focus,
-.stNumberInput input:focus {
-    border: 2px solid #4caf50 !important;
-    outline: none !important;
 }
 
 /* BUTTON */
@@ -96,7 +84,7 @@ label {
     background: #388e3c;
 }
 
-/* CENTER SPINNER FIX */
+/* SPINNER CENTER */
 div[data-testid="stSpinner"] {
     display: flex;
     justify-content: center;
@@ -185,7 +173,7 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE 🌿 (FIXED PERFECT)
+# INPUT PAGE 🌿
 # -------------------------------
 elif st.session_state.page == "input":
     set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
@@ -227,7 +215,7 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE 🚰 (FINAL CLEAN UI)
+# RESULT PAGE 🚰
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -242,7 +230,6 @@ elif st.session_state.page == "result":
 
     st.header("🌾 Smart Farm Irrigation Report")
 
-    # 🌟 UNIQUE OUTPUT UI
     if irrigation_on:
         st.markdown("""
         <div style="
@@ -282,7 +269,13 @@ elif st.session_state.page == "result":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# FOOTER 🌿
+# FOOTER 🌿 (FINAL CLEAN)
 # -------------------------------
 st.divider()
-st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
+
+st.markdown("""
+<div style='text-align:center; color:#1b5e20; font-weight:600; font-size:15px;'>
+🐐 Ekamdeep Singh | 🐐 Dheeraj Sharma | 🌾 Nadeem Alam  
+🚜 Smart Irrigation AI System
+</div>
+""", unsafe_allow_html=True)
