@@ -10,7 +10,7 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# FARM STYLE UI
+# FARM SOFT UI STYLE
 # -------------------------------
 st.markdown("""
 <style>
@@ -22,17 +22,17 @@ st.markdown("""
     background-attachment: fixed;
 }
 
-/* PAGE CONTAINER */
+/* CLEAN CONTAINER */
 .block-container {
-    background: rgba(255,255,255,0.12) !important;
+    background: rgba(255,255,255,0.10) !important;
     backdrop-filter: blur(6px);
     padding: 20px;
     border-radius: 15px;
 }
 
-/* CARD STYLE */
+/* FARM CARD */
 .card {
-    background: rgba(255,255,255,0.20);
+    background: rgba(255,255,255,0.18);
     padding: 20px;
     border-radius: 15px;
     text-align: center;
@@ -54,7 +54,6 @@ p, label {
 input {
     background: #fff !important;
     border-radius: 10px !important;
-    color: black !important;
 }
 
 /* BUTTON */
@@ -132,8 +131,8 @@ if st.session_state.page == "home":
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.title("🌱 Smart Farming Irrigation System")
-    st.markdown("🚜 AI Powered Water Management for Crops")
-    st.info("Helping farmers optimize irrigation using smart data")
+    st.markdown("🚜 AI powered water optimization for crops")
+    st.info("Helping farmers save water & improve yield 🌾")
 
     if st.button("🚀 Start Monitoring"):
         st.session_state.page = "input"
@@ -152,17 +151,18 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE 🌿
+# INPUT PAGE 🌿 (FIELD LOOK)
 # -------------------------------
 elif st.session_state.page == "input":
-    set_bg("https://images.unsplash.com/photo-1500595046743-cd271d694d30")
+    set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.header("🌿 Field Condition Input")
+
+    st.header("🌾 Field Condition Input Panel")
 
     city = st.text_input("🌍 Enter City", "Delhi")
 
-    if st.button("🌦 Get Weather Data"):
+    if st.button("🌦 Get Weather"):
         api_key = "YOUR_API_KEY_HERE"
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
@@ -185,14 +185,14 @@ elif st.session_state.page == "input":
     rainfall = col2.number_input("🌧 Rainfall (mm)", 0.0, 50.0, 0.0)
     ph = col3.number_input("⚗ Soil pH", 3.0, 9.0, 6.5)
 
-    if st.button("➡ Get Irrigation Result"):
+    if st.button("🚜 Analyze Field"):
         st.session_state.soil_moisture = soil_moisture
         st.session_state.page = "result"
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE 🚰 (SMART FARM DASHBOARD)
+# RESULT PAGE 🚰 (SMART FARM REPORT CARD)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -205,21 +205,29 @@ elif st.session_state.page == "result":
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    st.header("🌾 Smart Irrigation Decision Panel")
+    st.header("🌾 Smart Farm Irrigation Report")
 
-    # STATUS PANEL
+    # 🌟 UNIQUE RESULT UI (NEW STYLE)
     if irrigation_on:
         st.markdown("""
-        <div style="background:#2ecc71; padding:20px; border-radius:15px; color:white;">
-            <h2>🌧 Water Stress Detected</h2>
-            <p>💧 Recommendation: Irrigation Required</p>
+        <div style="background: linear-gradient(135deg, #43cea2, #185a9d);
+                    padding:20px;
+                    border-radius:15px;
+                    color:white;
+                    text-align:center;">
+            <h2>💧 WATER ALERT ACTIVE</h2>
+            <p>🌱 Soil needs irrigation for optimal growth</p>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="background:#74b9ff; padding:20px; border-radius:15px; color:white;">
-            <h2>🌿 Soil Condition Healthy</h2>
-            <p>🚫 Recommendation: No Irrigation Needed</p>
+        <div style="background: linear-gradient(135deg, #56ccf2, #2f80ed);
+                    padding:20px;
+                    border-radius:15px;
+                    color:white;
+                    text-align:center;">
+            <h2>🌿 FIELD IN GOOD CONDITION</h2>
+            <p>🚫 No irrigation required at this time</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -231,8 +239,6 @@ elif st.session_state.page == "result":
     col1.metric("🌱 Soil Moisture", f"{soil_moisture}%")
     col2.metric("🌡 Temperature", f"{temp}°C")
     col3.metric("💧 Humidity", f"{humidity}%")
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🔙 Back to Field"):
         st.session_state.page = "input"
