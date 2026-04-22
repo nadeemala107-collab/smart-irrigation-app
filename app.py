@@ -5,13 +5,12 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 # -------------------------------
-# 1️⃣ PAGE CONFIG
+# PAGE CONFIG
 # -------------------------------
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
-st.title("💧 Smart Precision Irrigation System")
 
 # -------------------------------
-# 2️⃣ LOAD DATASET
+# LOAD DATA
 # -------------------------------
 @st.cache_data
 def load_data():
@@ -20,36 +19,58 @@ def load_data():
 data = load_data()
 
 # -------------------------------
-# 3️⃣ SIDEBAR NAVIGATION
+# SESSION STATE (for page control)
 # -------------------------------
-page = st.sidebar.radio("📌 Navigation", 
-                       ["📊 Dataset", "🌿 Input", "🚰 Result"])
+if "page" not in st.session_state:
+    st.session_state.page = "home"
 
 # -------------------------------
-# 4️⃣ PREPROCESSING (COMMON)
+# TOP BUTTONS (Navigation)
+# -------------------------------
+col1, col2, col3 = st.columns([1,1,6])
+
+with col1:
+    if st.button("🏠 Home"):
+        st.session_state.page = "home"
+
+with col2:
+    if st.button("📊 Dataset"):
+        st.session_state.page = "dataset"
+
+# -------------------------------
+# PREPROCESSING (COMMON)
 # -------------------------------
 cat_cols = ['soil_type', 'sunlight_exposure', 'water_source_type']
 for col in cat_cols:
     data[col] = LabelEncoder().fit_transform(data[col].astype(str))
 
 X = data.drop(columns=['label'])
-
 scaler = StandardScaler()
 scaler.fit(X)
 
 # -------------------------------
-# 📊 PAGE 1: DATASET
+# HOME PAGE
 # -------------------------------
-if page == "📊 Dataset":
-    st.header("📊 Dataset Overview")
-    st.write(data.head())
-    st.divider()
-    st.info("This dataset is used to analyze irrigation conditions based on environmental factors.")
+if st.session_state.page == "home":
+    st.title("💧 Smart Precision Irrigation System")
+
+    st.markdown("### 🌱 Welcome to Smart Farming System")
+    st.info("This system helps farmers decide when to irrigate based on soil conditions.")
+
+    if st.button("🚀 Start"):
+        st.session_state.page = "input"
 
 # -------------------------------
-# 🌿 PAGE 2: INPUT
+# DATASET PAGE
 # -------------------------------
-elif page == "🌿 Input":
+elif st.session_state.page == "dataset":
+    st.header("📊 Dataset Overview")
+    st.write(data.head())
+
+# -------------------------------
+# INPUT PAGE
+# -------------------------------
+elif st.session_state.page == "input":
     st.header("🌿 Enter Environmental Conditions")
 
     col1, col2, col3 = st.columns(3)
@@ -62,28 +83,30 @@ elif page == "🌿 Input":
     ph = col5.number_input("Soil pH", 3.0, 9.0, 6.5)
     wind_speed = col6.number_input("Wind Speed (km/h)", 0.0, 40.0, 5.0)
 
-    # Save input to session
-    st.session_state["soil_moisture"] = soil_moisture
-
-    st.success("✅ Inputs saved! Go to Result page")
+    if st.button("➡️ Get Result"):
+        st.session_state.soil_moisture = soil_moisture
+        st.session_state.page = "result"
 
 # -------------------------------
-# 🚰 PAGE 3: RESULT
+# RESULT PAGE
 # -------------------------------
-elif page == "🚰 Result":
-    st.header("🚰 Irrigation Decision")
+elif st.session_state.page == "result":
+    st.header("🚰 Irrigation Result")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
 
-    # Simple logic
     if soil_moisture < 30:
-        status = "💧 Irrigation ON"
-        st.success(status)
+        st.success("💧 Irrigation ON")
     else:
-        status = "🚫 Irrigation OFF"
-        st.warning(status)
+        st.warning("🚫 Irrigation OFF")
 
     st.metric("🌱 Soil Moisture", soil_moisture)
 
-    st.divider()
-    st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
+    if st.button("🔙 Back"):
+        st.session_state.page = "input"
+
+# -------------------------------
+# FOOTER
+# -------------------------------
+st.divider()
+st.caption("Developed by Ekamdeep Singh, Dheeraj Sharma, Nadeem Alam 🌿")
