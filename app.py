@@ -1,8 +1,8 @@
 # IoT-Based Precision Irrigation System
 import streamlit as st
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+import requests
 
 # -------------------------------
 # PAGE CONFIG
@@ -19,13 +19,13 @@ def load_data():
 data = load_data()
 
 # -------------------------------
-# SESSION STATE (for page control)
+# SESSION STATE
 # -------------------------------
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
 # -------------------------------
-# TOP BUTTONS (Navigation)
+# TOP NAV BUTTONS
 # -------------------------------
 col1, col2, col3 = st.columns([1,1,6])
 
@@ -38,7 +38,7 @@ with col2:
         st.session_state.page = "dataset"
 
 # -------------------------------
-# PREPROCESSING (COMMON)
+# PREPROCESSING
 # -------------------------------
 cat_cols = ['soil_type', 'sunlight_exposure', 'water_source_type']
 for col in cat_cols:
@@ -55,7 +55,7 @@ if st.session_state.page == "home":
     st.title("💧 Smart Precision Irrigation System")
 
     st.markdown("### 🌱 Welcome to Smart Farming System")
-    st.info("This system helps farmers decide when to irrigate based on soil conditions.")
+    st.info("AI + Weather based irrigation decision system")
 
     if st.button("🚀 Start"):
         st.session_state.page = "input"
@@ -73,15 +73,28 @@ elif st.session_state.page == "dataset":
 elif st.session_state.page == "input":
     st.header("🌿 Enter Environmental Conditions")
 
-    col1, col2, col3 = st.columns(3)
-    temperature = col1.number_input("Temperature (°C)", 10.0, 45.0, 28.0)
-    humidity = col2.number_input("Humidity (%)", 10.0, 100.0, 60.0)
-    soil_moisture = col3.number_input("Soil Moisture (%)", 5.0, 60.0, 25.0)
+    # 🌍 City Input
+    city = st.text_input("🌍 Enter City", "Delhi")
 
-    col4, col5, col6 = st.columns(3)
-    rainfall = col4.number_input("Rainfall (mm)", 0.0, 50.0, 0.0)
-    ph = col5.number_input("Soil pH", 3.0, 9.0, 6.5)
-    wind_speed = col6.number_input("Wind Speed (km/h)", 0.0, 40.0, 5.0)
+    if st.button("🌦️ Get Weather"):
+        api_key = "YOUR_API_KEY"   # ← apni API key daalo
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+
+        response = requests.get(url).json()
+
+        if response.get("cod") != 200:
+            st.error("City not found ❌")
+        else:
+            st.session_state["temp"] = response['main']['temp']
+            st.session_state["humidity"] = response['main']['humidity']
+
+            st.success(f"🌡 Temp: {st.session_state['temp']}°C | 💧 Humidity: {st.session_state['humidity']}%")
+
+    # Manual Inputs
+    col1, col2, col3 = st.columns(3)
+    soil_moisture = col1.number_input("Soil Moisture (%)", 5.0, 60.0, 25.0)
+    rainfall = col2.number_input("Rainfall (mm)", 0.0, 50.0, 0.0)
+    ph = col3.number_input("Soil pH", 3.0, 9.0, 6.5)
 
     if st.button("➡️ Get Result"):
         st.session_state.soil_moisture = soil_moisture
@@ -91,16 +104,31 @@ elif st.session_state.page == "input":
 # RESULT PAGE
 # -------------------------------
 elif st.session_state.page == "result":
-    st.header("🚰 Irrigation Result")
+    st.header("🚰 Irrigation Decision")
 
     soil_moisture = st.session_state.get("soil_moisture", 25)
+    temp = st.session_state.get("temp", "N/A")
+    humidity = st.session_state.get("humidity", "N/A")
 
+    # 🎨 Color Card UI
     if soil_moisture < 30:
-        st.success("💧 Irrigation ON")
+        st.markdown(f"""
+        <div style='background-color:#d4edda;padding:20px;border-radius:12px'>
+            <h2 style='color:green;'>💧 Irrigation ON</h2>
+            <p>🌱 Soil Moisture: {soil_moisture}</p>
+            <p>🌡 Temperature: {temp}</p>
+            <p>💧 Humidity: {humidity}</p>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.warning("🚫 Irrigation OFF")
-
-    st.metric("🌱 Soil Moisture", soil_moisture)
+        st.markdown(f"""
+        <div style='background-color:#f8d7da;padding:20px;border-radius:12px'>
+            <h2 style='color:red;'>🚫 Irrigation OFF</h2>
+            <p>🌱 Soil Moisture: {soil_moisture}</p>
+            <p>🌡 Temperature: {temp}</p>
+            <p>💧 Humidity: {humidity}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     if st.button("🔙 Back"):
         st.session_state.page = "input"
