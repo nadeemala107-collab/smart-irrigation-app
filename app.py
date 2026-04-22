@@ -10,7 +10,7 @@ import requests
 st.set_page_config(page_title="Smart Irrigation", layout="wide")
 
 # -------------------------------
-# FARM SOFT UI STYLE (FIXED INPUT ISSUE)
+# FARM SOFT UI STYLE (FINAL FIX)
 # -------------------------------
 st.markdown("""
 <style>
@@ -46,34 +46,37 @@ h1, h2, h3 {
 }
 
 /* TEXT */
-p, label {
+p {
     color: #2d3436 !important;
 }
 
-/* ===== FIX INPUT VISIBILITY ===== */
+/* ============================= */
+/* ✅ FIX INPUT VISIBILITY FULL */
+/* ============================= */
+
+label {
+    color: #1b5e20 !important;
+    font-weight: 600 !important;
+}
+
+/* input boxes */
 .stTextInput input,
 .stNumberInput input {
     background-color: #ffffff !important;
     color: #000000 !important;
     border-radius: 10px !important;
-    padding: 8px !important;
     border: 1px solid #cfd8dc !important;
+    padding: 8px !important;
 }
 
-/* INPUT WRAPPER */
+/* input container */
 .stTextInput, .stNumberInput {
-    background: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.70) !important;
     padding: 6px;
     border-radius: 10px;
 }
 
-/* LABEL */
-label {
-    color: #1b5e20 !important;
-    font-weight: 600;
-}
-
-/* FOCUS EFFECT */
+/* focus effect */
 .stTextInput input:focus,
 .stNumberInput input:focus {
     border: 2px solid #4caf50 !important;
@@ -91,6 +94,13 @@ label {
 
 .stButton>button:hover {
     background: #388e3c;
+}
+
+/* CENTER SPINNER FIX */
+div[data-testid="stSpinner"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 </style>
@@ -175,7 +185,7 @@ elif st.session_state.page == "dataset":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT PAGE 🌿 (FIXED VISIBILITY)
+# INPUT PAGE 🌿 (FIXED PERFECT)
 # -------------------------------
 elif st.session_state.page == "input":
     set_bg("https://images.unsplash.com/photo-1500937386664-56d1dfef3854")
@@ -217,7 +227,7 @@ elif st.session_state.page == "input":
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# RESULT PAGE 🚰 (CLEAN FARM REPORT)
+# RESULT PAGE 🚰 (FINAL CLEAN UI)
 # -------------------------------
 elif st.session_state.page == "result":
     set_bg("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")
@@ -232,26 +242,29 @@ elif st.session_state.page == "result":
 
     st.header("🌾 Smart Farm Irrigation Report")
 
+    # 🌟 UNIQUE OUTPUT UI
     if irrigation_on:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #43cea2, #185a9d);
-                    padding:20px;
-                    border-radius:15px;
-                    color:white;
-                    text-align:center;">
-            <h2>💧 WATER ALERT ACTIVE</h2>
-            <p>🌱 Soil moisture low → Irrigation required</p>
+        <div style="
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            padding:20px;
+            border-radius:15px;
+            color:white;
+            text-align:center;">
+            <h2>💧 FARM ALERT: WATER NEEDED</h2>
+            <p>🌱 Soil moisture is low — irrigation recommended</p>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #56ccf2, #2f80ed);
-                    padding:20px;
-                    border-radius:15px;
-                    color:white;
-                    text-align:center;">
-            <h2>🌿 FIELD HEALTHY</h2>
-            <p>🚫 No irrigation required</p>
+        <div style="
+            background: linear-gradient(135deg, #56ccf2, #2f80ed);
+            padding:20px;
+            border-radius:15px;
+            color:white;
+            text-align:center;">
+            <h2>🌿 FARM STATUS: HEALTHY</h2>
+            <p>🚫 No irrigation required currently</p>
         </div>
         """, unsafe_allow_html=True)
 
